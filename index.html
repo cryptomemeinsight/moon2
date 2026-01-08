@@ -57,29 +57,17 @@
             transform: scale(0.95);
         }
 
-        .comet {
+        .star {
             position: absolute;
-            width: 2px;
-            height: 50px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5;
-            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.5);
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+            animation: twinkle linear infinite;
         }
 
-        @keyframes fall {
-            0% {
-                transform: translate(0, 0) rotate(-45deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-300px, 300px) rotate(-45deg);
-                opacity: 0;
-            }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         .top-menu {
@@ -285,7 +273,7 @@
 </head>
 <body>
     <img id="bg-image" src="final_1.gif" alt="Moon The Cow">
-    <div id="comet-container"></div>
+    <div id="star-container"></div>
     
     <div class="top-menu">
         <a href="https://dexscreener.com/solana/EiPdpRWof8GvX5qYbBiCFTiVVuqPKP9b7eEq3mNDNGia" target="_blank" rel="noopener noreferrer" class="menu-icon" title="Dexscreener">
@@ -307,31 +295,65 @@
     </div>
 
     <script>
-        function createComet() {
-            const comet = document.createElement('div');
-            comet.classList.add('comet');
+        function createStars() {
+            const container = document.getElementById('star-container');
+            if (!container) return;
             
-            // Random start position
-            const startX = Math.random() * window.innerWidth + 200; // Offset to start slightly off screen right
-            const startY = Math.random() * window.innerHeight * 0.5 - 200; // Start mostly from top
-            
-            comet.style.left = `${startX}px`;
-            comet.style.top = `${startY}px`;
-            
-            // Random duration and delay
-            const duration = Math.random() * 1.5 + 0.5 + 's';
-            comet.style.animation = `fall ${duration} linear forwards`;
-            
-            document.getElementById('comet-container').appendChild(comet);
-            
-            // Remove after animation
-            setTimeout(() => {
-                comet.remove();
-            }, 2000);
-        }
+            const starCount = 150;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            // Exclusion radius: 25% of the smaller screen dimension to avoid the central "cow"
+            const exclusionRadius = Math.min(width, height) * 0.25;
 
-        // Create comets periodically
-        setInterval(createComet, 800);
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                let x, y, distance;
+                let attempts = 0;
+                // Try to place star outside the exclusion zone
+                do {
+                    x = Math.random() * width;
+                    y = Math.random() * height;
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    distance = Math.sqrt(dx * dx + dy * dy);
+                    attempts++;
+                } while (distance < exclusionRadius && attempts < 10);
+                
+                star.style.left = `${x}px`;
+                star.style.top = `${y}px`;
+                
+                // Random size between 1px and 3px
+                const size = Math.random() * 2 + 1 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+
+                // Random animation duration (1.5s to 4s) and delay
+                star.style.animationDuration = Math.random() * 2.5 + 1.5 + 's';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                container.appendChild(star);
+            }
+        }
+        
+        // Initialize stars
+        createStars();
+        
+        // Re-generate on resize to maintain distribution
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+             clearTimeout(resizeTimeout);
+             resizeTimeout = setTimeout(() => {
+                 const container = document.getElementById('star-container');
+                 if(container) {
+                     container.innerHTML = '';
+                     createStars();
+                 }
+             }, 200);
+        });
 
         function copyCA() {
             const address = document.getElementById('ca-address').innerText;
@@ -349,4 +371,3 @@
     </script>
 </body>
 </html>
-
