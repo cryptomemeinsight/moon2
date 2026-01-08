@@ -57,18 +57,7 @@
             transform: scale(0.95);
         }
 
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            z-index: 1;
-            animation: twinkle linear infinite;
-        }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
 
         .top-menu {
             position: absolute;
@@ -111,86 +100,6 @@
             border-radius: 50%;
         }
 
-        .ca-text {
-            font-size: 1.1em;
-            word-break: break-all;
-        }
-        .copy-btn {
-            cursor: pointer;
-            padding: 8px 16px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background 0.2s;
-            white-space: nowrap;
-        }
-        .copy-btn:hover {
-            background: #e0e0e0;
-        }
-        .copy-btn:active {
-            transform: scale(0.95);
-        }
-
-        .comet {
-            position: absolute;
-            width: 2px;
-            height: 50px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5;
-            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.5);
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translate(0, 0) rotate(-45deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-300px, 300px) rotate(-45deg);
-                opacity: 0;
-            }
-        }
-
-        .top-menu {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 15px;
-            z-index: 20;
-        }
-
-        .menu-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .menu-icon:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .menu-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-        }
 
         .bottom-container {
             position: absolute;
@@ -206,7 +115,7 @@
         }
 
         .main-title {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Showcard Gothic', 'Impact', sans-serif;
             font-size: 3.5em;
             font-weight: 800;
             text-align: center;
@@ -215,6 +124,13 @@
             margin-bottom: 5px;
             letter-spacing: 2px;
             animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        .tm-symbol {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.4em;
+            vertical-align: super;
+            margin-left: 5px;
         }
 
         @keyframes pulse-glow {
@@ -273,7 +189,6 @@
 </head>
 <body>
     <img id="bg-image" src="final_1.gif" alt="Moon The Cow">
-    <div id="star-container"></div>
     
     <div class="top-menu">
         <a href="https://dexscreener.com/solana/EiPdpRWof8GvX5qYbBiCFTiVVuqPKP9b7eEq3mNDNGia" target="_blank" rel="noopener noreferrer" class="menu-icon" title="Dexscreener">
@@ -287,7 +202,7 @@
     </div>
 
     <div class="bottom-container">
-        <h1 class="main-title">Moon The Cow&trade;</h1>
+        <h1 class="main-title">Moon The Cow<span class="tm-symbol">&trade;</span></h1>
         <div class="ca-card">
             <span class="ca-text" id="ca-address">DZ1fC3aiobpYEe621jaCHX4Dr83n4Pv44fiikZY2pump</span>
             <button class="copy-btn" onclick="copyCA()">Copy</button>
@@ -295,66 +210,6 @@
     </div>
 
     <script>
-        function createStars() {
-            const container = document.getElementById('star-container');
-            if (!container) return;
-            
-            const starCount = 150;
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            // Exclusion radius: 25% of the smaller screen dimension to avoid the central "cow"
-            const exclusionRadius = Math.min(width, height) * 0.25;
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                let x, y, distance;
-                let attempts = 0;
-                // Try to place star outside the exclusion zone
-                do {
-                    x = Math.random() * width;
-                    y = Math.random() * height;
-                    const dx = x - centerX;
-                    const dy = y - centerY;
-                    distance = Math.sqrt(dx * dx + dy * dy);
-                    attempts++;
-                } while (distance < exclusionRadius && attempts < 10);
-                
-                star.style.left = `${x}px`;
-                star.style.top = `${y}px`;
-                
-                // Random size between 1px and 3px
-                const size = Math.random() * 2 + 1 + 'px';
-                star.style.width = size;
-                star.style.height = size;
-
-                // Random animation duration (1.5s to 4s) and delay
-                star.style.animationDuration = Math.random() * 2.5 + 1.5 + 's';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                
-                container.appendChild(star);
-            }
-        }
-        
-        // Initialize stars
-        createStars();
-        
-        // Re-generate on resize to maintain distribution
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-             clearTimeout(resizeTimeout);
-             resizeTimeout = setTimeout(() => {
-                 const container = document.getElementById('star-container');
-                 if(container) {
-                     container.innerHTML = '';
-                     createStars();
-                 }
-             }, 200);
-        });
-
         function copyCA() {
             const address = document.getElementById('ca-address').innerText;
             navigator.clipboard.writeText(address).then(() => {
